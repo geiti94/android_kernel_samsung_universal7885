@@ -28,38 +28,39 @@ extern int disable_recovery_handling;
 const char *response_code_to_str(int response_code)
 {
 	switch (response_code) {
-	case ERR_PARSE_FAILED:
-		return "ERR_PARSE_FAILED";
-	case FW_PANIC_TAR_GENERATED:
-		return "FW_PANIC_TAR_GENERATED";
-	case FW_PANIC_ERR_SCRIPT_FILE_NOT_FOUND:
-		return "FW_PANIC_ERR_SCRIPT_FILE_NOT_FOUND";
-	case FW_PANIC_ERR_NO_DEV:
-		return "FW_PANIC_ERR_NO_DEV";
-	case FW_PANIC_ERR_MMAP:
-		return "FW_PANIC_ERR_MMAP";
-	case FW_PANIC_ERR_SABLE_FILE:
-		return "FW_PANIC_ERR_SABLE_FILE";
-	case FW_PANIC_ERR_TAR:
-		return "FW_PANIC_ERR_TAR";
-	case OTHER_SBL_GENERATED:
-		return "OTHER_SBL_GENERATED";
-	case OTHER_TAR_GENERATED:
-		return "OTHER_TAR_GENERATED";
-	case OTHER_ERR_SCRIPT_FILE_NOT_FOUND:
-		return "OTHER_ERR_SCRIPT_FILE_NOT_FOUND";
-	case OTHER_ERR_NO_DEV:
-		return "OTHER_ERR_NO_DEV";
-	case OTHER_ERR_MMAP:
-		return "OTHER_ERR_MMAP";
-	case OTHER_ERR_SABLE_FILE:
-		return "OTHER_ERR_SABLE_FILE";
-	case OTHER_ERR_TAR:
-		return "OTHER_ERR_TAR";
-	case OTHER_IGNORE_TRIGGER:
-		return "OTHER_IGNORE_TRIGGER";
+	case SCSC_WLBTD_ERR_PARSE_FAILED:
+		return "SCSC_WLBTD_ERR_PARSE_FAILED";
+	case SCSC_WLBTD_FW_PANIC_TAR_GENERATED:
+		return "SCSC_WLBTD_FW_PANIC_TAR_GENERATED";
+	case SCSC_WLBTD_FW_PANIC_ERR_SCRIPT_FILE_NOT_FOUND:
+		return "SCSC_WLBTD_FW_PANIC_ERR_SCRIPT_FILE_NOT_FOUND";
+	case SCSC_WLBTD_FW_PANIC_ERR_NO_DEV:
+		return "SCSC_WLBTD_FW_PANIC_ERR_NO_DEV";
+	case SCSC_WLBTD_FW_PANIC_ERR_MMAP:
+		return "SCSC_WLBTD_FW_PANIC_ERR_MMAP";
+	case SCSC_WLBTD_FW_PANIC_ERR_SABLE_FILE:
+		return "SCSC_WLBTD_FW_PANIC_ERR_SABLE_FILE";
+	case SCSC_WLBTD_FW_PANIC_ERR_TAR:
+		return "SCSC_WLBTD_FW_PANIC_ERR_TAR";
+	case SCSC_WLBTD_OTHER_SBL_GENERATED:
+		return "SCSC_WLBTD_OTHER_SBL_GENERATED";
+	case SCSC_WLBTD_OTHER_TAR_GENERATED:
+		return "SCSC_WLBTD_OTHER_TAR_GENERATED";
+	case SCSC_WLBTD_OTHER_ERR_SCRIPT_FILE_NOT_FOUND:
+		return "SCSC_WLBTD_OTHER_ERR_SCRIPT_FILE_NOT_FOUND";
+	case SCSC_WLBTD_OTHER_ERR_NO_DEV:
+		return "SCSC_WLBTD_OTHER_ERR_NO_DEV";
+	case SCSC_WLBTD_OTHER_ERR_MMAP:
+		return "SCSC_WLBTD_OTHER_ERR_MMAP";
+	case SCSC_WLBTD_OTHER_ERR_SABLE_FILE:
+		return "SCSC_WLBTD_OTHER_ERR_SABLE_FILE";
+	case SCSC_WLBTD_OTHER_ERR_TAR:
+		return "SCSC_WLBTD_OTHER_ERR_TAR";
+	case SCSC_WLBTD_OTHER_IGNORE_TRIGGER:
+		return "SCSC_WLBTD_OTHER_IGNORE_TRIGGER";
 	default:
-		return "UNKNOWN response";
+		SCSC_TAG_ERR(WLBTD, "UNKNOWN response_code %d", response_code);
+		return "UNKNOWN response_code";
 	}
 }
 
@@ -136,7 +137,7 @@ static int msg_from_wlbtd_sable_cb(struct sk_buff *skb, struct genl_info *info)
 	 */
 
 	switch (status) {
-	case ERR_PARSE_FAILED:
+	case SCSC_WLBTD_ERR_PARSE_FAILED:
 		if (!completion_done(&fw_panic_done)) {
 			SCSC_TAG_INFO(WLBTD, "completing fw_panic_done\n");
 			complete(&fw_panic_done);
@@ -146,27 +147,27 @@ static int msg_from_wlbtd_sable_cb(struct sk_buff *skb, struct genl_info *info)
 			complete(&event_done);
 		}
 		break;
-	case FW_PANIC_TAR_GENERATED:
-	case FW_PANIC_ERR_TAR:
-	case FW_PANIC_ERR_SCRIPT_FILE_NOT_FOUND:
-	case FW_PANIC_ERR_NO_DEV:
-	case FW_PANIC_ERR_MMAP:
-	case FW_PANIC_ERR_SABLE_FILE:
+	case SCSC_WLBTD_FW_PANIC_TAR_GENERATED:
+	case SCSC_WLBTD_FW_PANIC_ERR_TAR:
+	case SCSC_WLBTD_FW_PANIC_ERR_SCRIPT_FILE_NOT_FOUND:
+	case SCSC_WLBTD_FW_PANIC_ERR_NO_DEV:
+	case SCSC_WLBTD_FW_PANIC_ERR_MMAP:
+	case SCSC_WLBTD_FW_PANIC_ERR_SABLE_FILE:
 		if (!completion_done(&fw_panic_done)) {
 			SCSC_TAG_INFO(WLBTD, "completing fw_panic_done\n");
 			complete(&fw_panic_done);
 		}
 		break;
-	case OTHER_TAR_GENERATED:
+	case SCSC_WLBTD_OTHER_TAR_GENERATED:
 		/* ignore */
 		break;
-	case OTHER_SBL_GENERATED:
-	case OTHER_ERR_TAR:
-	case OTHER_ERR_SCRIPT_FILE_NOT_FOUND:
-	case OTHER_ERR_NO_DEV:
-	case OTHER_ERR_MMAP:
-	case OTHER_ERR_SABLE_FILE:
-	case OTHER_IGNORE_TRIGGER:
+	case SCSC_WLBTD_OTHER_SBL_GENERATED:
+	case SCSC_WLBTD_OTHER_ERR_TAR:
+	case SCSC_WLBTD_OTHER_ERR_SCRIPT_FILE_NOT_FOUND:
+	case SCSC_WLBTD_OTHER_ERR_NO_DEV:
+	case SCSC_WLBTD_OTHER_ERR_MMAP:
+	case SCSC_WLBTD_OTHER_ERR_SABLE_FILE:
+	case SCSC_WLBTD_OTHER_IGNORE_TRIGGER:
 		if (!completion_done(&event_done)) {
 			SCSC_TAG_INFO(WLBTD, "completing event_done\n");
 			complete(&event_done);
